@@ -69,7 +69,7 @@ module Fleet
       wait_for_load_state(service_name, :no_state)
     end
 
-    def states(service_name)
+    def status(service_name)
       fleet_state = get_state(service_name)
       service_states = JSON.parse(fleet_state['node']['value'])
       service_states.each_with_object({}) do |(k, v), hash|
@@ -86,7 +86,7 @@ module Fleet
     def wait_for_load_state(service_name, target_state='loaded')
       result = MAX_RETRIES.times do
         begin
-          break target_state if states(service_name)[:load_state] == target_state
+          break target_state if status(service_name)[:load_state] == target_state
         rescue Fleet::NotFound
           # :no_state is a special case of target state that indicates we
           # expect the state to not be found at all (useful when waiting for

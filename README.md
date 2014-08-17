@@ -3,6 +3,8 @@ fleet-api
 
 Provides a Ruby wrapper around the CoreOS Fleet API.
 
+The client allows programmatic access to most of the *fleetctl* commands including the ability to load, start, stop, unload and destroy unit files.
+
 At this point, there is no official Fleet API (though one is [in the works](https://github.com/coreos/fleet/blob/master/Documentation/api-v1-alpha.md)) so this library mimcs the behavior of the *fleetctl* command line tool and simply writes data to the [etcd]() key-value-store. The Fleet daemon reads data out of specific keys in etcd and processes it as appropiate.
 
 As work on the actual Fleet API progresses, this library will be refactored to use the real API.
@@ -105,10 +107,9 @@ Equivalent of `fleetctl destroy`:
     client = Fleet.new
     client.destroy('forever.service')
     
-#### Retrieving Service State
+#### Retrieving Service Status
 
 Equivalent of `fleetctl status`:
 
-
     client = Fleet.new
-    client.states('forever.service')
+    client.status('forever.service')

@@ -223,7 +223,7 @@ describe Fleet::Client do
     end
   end
 
-  describe '#states' do
+  describe '#status' do
 
     let(:service_name) { 'foo.service' }
 
@@ -237,11 +237,11 @@ describe Fleet::Client do
 
     it 'retrieves service state from the fleet client' do
       expect(subject).to receive(:get_state).with(service_name)
-      subject.states(service_name)
+      subject.status(service_name)
     end
 
     it 'returns the state hash w/ normalized keys' do
-      expect(subject.states(service_name)).to eq(load: 'loaded', run: 'running')
+      expect(subject.status(service_name)).to eq(load: 'loaded', run: 'running')
     end
   end
 end
