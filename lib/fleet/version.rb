@@ -1,3 +1,3 @@
 module Fleet
-  VERSION = '0.0.1'.freeze unless defined?(Fleet::VERSION)
+  VERSION = '0.5.0'.freeze unless defined?(Fleet::VERSION)
 end
