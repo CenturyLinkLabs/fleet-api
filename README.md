@@ -14,7 +14,7 @@ As work on the actual Fleet API progresses, this library will be refactored to u
 
 An alternative implementation is available in the [cloudspace/ruby-fleetctl](https://github.com/cloudspace/ruby-fleetctl) gem. The *ruby-fleetctl* gem takes a different approach and uses SSH to interact directly with the *fleetctl* binary to send commands. Our approach of writing directly to etcd cuts out the *fleetctl* middleman but is in more danger of being broken by future releases since we're effectively using a "private API".
 
-The current version of the *fleet-api* gem is known to work with version 0.5.0 of Fleet which ships with the the current stable version of CoreOS (367.1.0)
+The current version of the *fleet-api* gem is known to work with version 0.6.0 of Fleet.
 
 ### Installation
 
