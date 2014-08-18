@@ -11,10 +11,7 @@ module Fleet
     end
 
     def to_unit
-      {
-        'Contents' => unit_body,
-        'Raw' => raw
-      }
+      { 'Raw' => raw }
     end
 
     def to_job
@@ -29,14 +26,6 @@ module Fleet
     end
 
     private
-
-    def unit_body
-      @service_def.each_with_object({}) do |(heading, section), memo|
-        memo[heading] = section.each_with_object({}) do |(key, value), memo|
-          memo[key] = [value]
-        end
-      end
-    end
 
     def raw
       raw_string = ''

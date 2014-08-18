@@ -44,17 +44,7 @@ Description=#{service_hash['Unit']['Description']}
 ExecStart=#{service_hash['Service']['ExecStart']}
 UNIT_FILE
 
-      expected = {
-        'Contents' => {
-          'Unit' => {
-            'Description' => [service_hash['Unit']['Description']]
-          },
-          'Service' => {
-            'ExecStart' => [service_hash['Service']['ExecStart']]
-          }
-        },
-        'Raw' => raw
-      }
+      expected = { 'Raw' => raw }
 
       expect(subject.to_unit).to eq expected
     end

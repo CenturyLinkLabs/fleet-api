@@ -12,8 +12,8 @@ module Fleet
   class Client
 
     FLEET_PATH = 'v2/keys/_coreos.com/fleet'
-    MAX_RETRIES = 10
-    SLEEP_TIME = (4.0 / MAX_RETRIES.to_f)
+    MAX_RETRIES = 20
+    SLEEP_TIME = (10.0 / MAX_RETRIES.to_f)
 
     attr_accessor(*Configuration::VALID_OPTIONS_KEYS)
 
@@ -65,7 +65,7 @@ module Fleet
 
     def unload(service_name)
       update_job_target_state(service_name, :inactive)
-      wait_for_load_state(service_name, 'not-found')
+      wait_for_load_state(service_name, :no_state)
     end
 
     def destroy(service_name)

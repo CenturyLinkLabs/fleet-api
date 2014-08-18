@@ -190,13 +190,9 @@ describe Fleet::Client do
   describe '#unload' do
     let(:service_name) { 'foo.service' }
 
-    let(:fleet_state) do
-      { 'node' => { 'value' => '{ "load_state": "not-found" }' } }
-    end
-
     before do
       allow(subject).to receive(:update_job_target_state)
-      allow(subject).to receive(:get_state).and_return(fleet_state)
+      allow(subject).to receive(:get_state).and_raise(Fleet::NotFound, 'boom')
     end
 
     it 'invokes #update_job_target_state' do
@@ -213,13 +209,17 @@ describe Fleet::Client do
 
     context 'when the unload state cannot be achieved' do
 
+      let(:fleet_state) do
+        { 'node' => { 'value' => '{ "load_state": "loaded" }' } }
+      end
+
       before do
-        allow(subject).to receive(:get_state).and_raise(Fleet::NotFound, 'boom')
+        allow(subject).to receive(:get_state).and_return(fleet_state)
         allow(subject).to receive(:sleep)
       end
 
-      it 're-checks the state 10 times' do
-        expect(subject).to receive(:get_state).exactly(10).times
+      it 're-checks the state 20 times' do
+        expect(subject).to receive(:get_state).exactly(20).times
         subject.unload(service_name) rescue nil
       end
 
