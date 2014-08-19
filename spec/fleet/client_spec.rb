@@ -32,85 +32,117 @@ describe Fleet::Client do
       { 'node' => { 'value' => '{ "loadState": "loaded" }' } }
     end
 
-    before do
-      allow(subject).to receive(:create_unit).and_return(nil)
-      allow(subject).to receive(:create_job).and_return(nil)
-      allow(subject).to receive(:update_job_target_state).and_return(nil)
-      allow(subject).to receive(:get_state).and_return(fleet_state)
-      allow(Fleet::ServiceDefinition).to receive(:new).and_return(sd)
+    context 'when a service definition is provided' do
+      before do
+        allow(subject).to receive(:create_unit).and_return(nil)
+        allow(subject).to receive(:create_job).and_return(nil)
+        allow(subject).to receive(:update_job_target_state).and_return(nil)
+        allow(subject).to receive(:get_state).and_return(fleet_state)
+        allow(Fleet::ServiceDefinition).to receive(:new).and_return(sd)
+      end
+
+      it 'invokes #create_unit' do
+        expect(subject).to receive(:create_unit)
+          .with(sd.sha1, sd.to_unit)
+
+        subject.load(name, service_def)
+      end
+
+      it 'invokes #create_job' do
+        expect(subject).to receive(:create_job)
+          .with(sd.name, sd.to_job)
+
+        subject.load(name, service_def)
+      end
+
+      it 'invokes #update_job_target_state' do
+        expect(subject).to receive(:update_job_target_state)
+          .with(sd.name, :loaded)
+
+        subject.load(name, service_def)
+      end
+
+      it 'checks the job state' do
+        expect(subject).to receive(:get_state).with(sd.name)
+        subject.load(name, service_def)
+      end
+
+      context 'when #create_unit raises PreconditionFailed' do
+
+        before do
+          allow(subject).to receive(:create_unit)
+            .and_raise(Fleet::PreconditionFailed.new('boom'))
+        end
+
+        it 'does not blow up' do
+          expect { subject.load(name, service_def) }.to_not raise_error
+        end
+      end
+
+      context 'when #create_unit raises something other than PreconditionFailed' do
+
+        before do
+          allow(subject).to receive(:create_unit)
+            .and_raise(Fleet::BadRequest.new('boom'))
+        end
+
+        it 'propagates the error' do
+          expect { subject.load(name, service_def) }.to(raise_error(Fleet::BadRequest))
+        end
+      end
+
+      context 'when #create_job raises PreconditionFailed' do
+
+        before do
+          allow(subject).to receive(:create_job)
+            .and_raise(Fleet::PreconditionFailed.new('boom'))
+        end
+
+        it 'does not blow up' do
+          expect { subject.load(name, service_def) }.to_not raise_error
+        end
+      end
+
+      context 'when #create_job raises something other than PreconditionFailed' do
+
+        before do
+          allow(subject).to receive(:create_job)
+            .and_raise(Fleet::BadRequest.new('boom'))
+        end
+
+        it 'propagates the error' do
+          expect { subject.load(name, service_def) }.to(raise_error(Fleet::BadRequest))
+        end
+      end
     end
 
-    it 'invokes #create_unit' do
-      expect(subject).to receive(:create_unit)
-        .with(sd.sha1, sd.to_unit)
-
-      subject.load(name, service_def)
-    end
-
-    it 'invokes #create_job' do
-      expect(subject).to receive(:create_job)
-        .with(sd.name, sd.to_job)
-
-      subject.load(name, service_def)
-    end
-
-    it 'invokes #update_job_target_state' do
-      expect(subject).to receive(:update_job_target_state)
-        .with(sd.name, :loaded)
-
-      subject.load(name, service_def)
-    end
-
-    it 'checks the job state' do
-      expect(subject).to receive(:get_state).with(sd.name)
-      subject.load(name, service_def)
-    end
-
-    context 'when #create_unit raises PreconditionFailed' do
+    context 'when no service definition is provided' do
 
       before do
-        allow(subject).to receive(:create_unit)
-          .and_raise(Fleet::PreconditionFailed.new('boom'))
+        allow(subject).to receive(:update_job_target_state).and_return(nil)
+        allow(subject).to receive(:get_state).and_return(fleet_state)
       end
 
-      it 'does not blow up' do
-        expect { subject.load(name, service_def) }.to_not raise_error
-      end
-    end
-
-    context 'when #create_unit raises something other than PreconditionFailed' do
-
-      before do
-        allow(subject).to receive(:create_unit)
-          .and_raise(Fleet::BadRequest.new('boom'))
+      it 'does NOT invoke #create_unit' do
+        expect(subject).to_not receive(:create_unit)
+        subject.load(name)
       end
 
-      it 'propagates the error' do
-        expect { subject.load(name, service_def) }.to(raise_error(Fleet::BadRequest))
-      end
-    end
-
-    context 'when #create_job raises PreconditionFailed' do
-
-      before do
-        allow(subject).to receive(:create_job)
-          .and_raise(Fleet::PreconditionFailed.new('boom'))
+      it 'does NOT invoke #create_job' do
+        expect(subject).to_not receive(:create_job)
+        subject.load(name)
       end
 
-      it 'does not blow up' do
-        expect { subject.load(name, service_def) }.to_not raise_error
-      end
-    end
+      it 'invokes #update_job_target_state' do
+        expect(subject).to receive(:update_job_target_state)
+          .with(sd.name, :loaded)
 
-    context 'when #create_job raises something other than PreconditionFailed' do
-
-      before do
-        allow(subject).to receive(:create_job)
-          .and_raise(Fleet::BadRequest.new('boom'))
+        subject.load(name)
       end
 
-      it 'propagates the error' do
-        expect { subject.load(name, service_def) }.to(raise_error(Fleet::BadRequest))
+      it 'checks the job state' do
+        expect(subject).to receive(:get_state).with(sd.name)
+        subject.load(name)
       end
     end
   end

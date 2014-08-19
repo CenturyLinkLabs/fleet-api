@@ -30,24 +30,26 @@ module Fleet
     include Fleet::Client::State
     include Fleet::Client::Unit
 
-    def load(name, service_def={})
+    def load(name, service_def=nil)
 
-      unless service_def.is_a?(ServiceDefinition)
-        service_def = ServiceDefinition.new(name, service_def)
+      if service_def
+        unless service_def.is_a?(ServiceDefinition)
+          service_def = ServiceDefinition.new(name, service_def)
+        end
+
+        begin
+          create_unit(service_def.sha1, service_def.to_unit)
+        rescue Fleet::PreconditionFailed
+        end
+
+        begin
+          create_job(service_def.name, service_def.to_job)
+        rescue Fleet::PreconditionFailed
+        end
       end
 
-      begin
-        create_unit(service_def.sha1, service_def.to_unit)
-      rescue Fleet::PreconditionFailed
-      end
-
-      begin
-        create_job(service_def.name, service_def.to_job)
-      rescue Fleet::PreconditionFailed
-      end
-
-      update_job_target_state(service_def.name, :loaded)
-      wait_for_load_state(service_def.name, 'loaded')
+      update_job_target_state(name, :loaded)
+      wait_for_load_state(name, 'loaded')
     end
 
     def start(service_name)
