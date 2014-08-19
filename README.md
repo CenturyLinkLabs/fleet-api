@@ -1,6 +1,8 @@
 fleet-api
 =========
 
+[![Gem Version](https://badge.fury.io/rb/fleet-api.svg)](http://badge.fury.io/rb/fleet-api)
+
 Provides a Ruby wrapper around the CoreOS Fleet API.
 
 The client allows programmatic access to most of the *fleetctl* commands including the ability to load, start, stop, unload and destroy unit files.
