@@ -9,7 +9,7 @@ describe Fleet::Connection do
     handlers = [
       Faraday::Request::UrlEncoded,
       FaradayMiddleware::ParseJson,
-      Middleware::Response::RaiseError,
+      Fleet::Middleware::Response::RaiseError,
       Faraday::Adapter::NetHttp
     ]
 

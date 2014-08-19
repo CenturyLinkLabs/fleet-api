@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Middleware::Response::RaiseError do
+describe Fleet::Middleware::Response::RaiseError do
 
   describe '#on_complete' do
 

@@ -1,6 +1,6 @@
 require 'faraday'
 require 'faraday_middleware'
-require 'middleware/response/raise_error'
+require 'fleet/middleware/response/raise_error'
 
 module Fleet
   module Connection
@@ -15,7 +15,7 @@ module Fleet
       Faraday.new(options) do |faraday|
         faraday.request :url_encoded
         faraday.response :json
-        faraday.response :raise_error
+        faraday.response :raise_fleet_error
         faraday.adapter adapter
       end
     end

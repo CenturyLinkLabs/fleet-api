@@ -2,7 +2,7 @@ require 'faraday'
 require 'json'
 require 'fleet/error'
 
-module Middleware
+module Fleet::Middleware
   module Response
 
     class RaiseError < Faraday::Response::Middleware
@@ -32,6 +32,6 @@ module Middleware
       end
     end
 
-    Faraday.register_middleware :response, raise_error: -> { RaiseError }
+    Faraday.register_middleware :response, raise_fleet_error: -> { RaiseError }
   end
 end
