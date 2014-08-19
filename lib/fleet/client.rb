@@ -12,7 +12,7 @@ module Fleet
 
     FLEET_PATH = 'v2/keys/_coreos.com/fleet'
     MAX_RETRIES = 10
-    SLEEP_TIME = (1.0 / 10.0)
+    SLEEP_TIME = (4.0 / MAX_RETRIES.to_f)
 
     attr_accessor(*Configuration::VALID_OPTIONS_KEYS)
 
