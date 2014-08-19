@@ -44,5 +44,5 @@ DEPENDENCIES
   fleet-api!
   rake
   rspec (~> 3.0)
-  simplecov
-  simplecov-rcov
+  simplecov (~> 0.9.0)
+  simplecov-rcov (~> 0.2.3)
