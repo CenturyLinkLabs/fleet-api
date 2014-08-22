@@ -4,6 +4,7 @@ require 'fleet/error'
 require 'fleet/request'
 require 'fleet/service_definition'
 require 'fleet/client/job'
+require 'fleet/client/machines'
 require 'fleet/client/state'
 require 'fleet/client/unit'
 
@@ -27,6 +28,7 @@ module Fleet
     include Fleet::Request
 
     include Fleet::Client::Job
+    include Fleet::Client::Machines
     include Fleet::Client::State
     include Fleet::Client::Unit
 
