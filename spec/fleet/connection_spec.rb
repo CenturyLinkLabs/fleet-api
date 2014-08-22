@@ -10,6 +10,7 @@ describe Fleet::Connection do
       Faraday::Request::UrlEncoded,
       FaradayMiddleware::ParseJson,
       Fleet::Middleware::Response::RaiseError,
+      FaradayMiddleware::FollowRedirects,
       Faraday::Adapter::NetHttp
     ]
 

@@ -16,6 +16,7 @@ module Fleet
         faraday.request :url_encoded
         faraday.response :json
         faraday.response :raise_fleet_error
+        faraday.response :follow_redirects
         faraday.adapter adapter
       end
     end
