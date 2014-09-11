@@ -32,7 +32,7 @@ module Fleet
     include Fleet::Client::State
     include Fleet::Client::Unit
 
-    def load(name, service_def=nil)
+    def load(name, service_def=nil, sync=false)
 
       if service_def
         unless service_def.is_a?(ServiceDefinition)
@@ -51,26 +51,26 @@ module Fleet
       end
 
       update_job_target_state(name, :loaded)
-      wait_for_load_state(name, 'loaded')
+      wait_for_load_state(name, 'loaded') if sync
     end
 
     def start(service_name)
       update_job_target_state(service_name, :launched)
     end
 
-    def stop(service_name)
+    def stop(service_name, sync=false)
       update_job_target_state(service_name, :loaded)
-      wait_for_load_state(service_name, 'loaded')
+      wait_for_load_state(service_name, 'loaded') if sync
     end
 
-    def unload(service_name)
+    def unload(service_name, sync=false)
       update_job_target_state(service_name, :inactive)
-      wait_for_load_state(service_name, :no_state)
+      wait_for_load_state(service_name, :no_state) if sync
     end
 
-    def destroy(service_name)
+    def destroy(service_name, sync=false)
       delete_job(service_name)
-      wait_for_load_state(service_name, :no_state)
+      wait_for_load_state(service_name, :no_state) if sync
     end
 
     def status(service_name)
