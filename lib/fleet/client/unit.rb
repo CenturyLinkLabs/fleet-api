@@ -2,29 +2,30 @@ module Fleet
   class Client
     module Unit
 
-      UNIT_RESOURCE = 'unit'
+      UNITS_RESOURCE = 'units'
 
       def list_units()
-        get(unit_path)
+        get(units_path)
       end
 
-      def create_unit(unit_sha1, unit_def)
-        opts = {
-          querystring: { 'prevExist' => false },
-          body: { value: unit_def.to_json }
-        }
-        put(unit_path(unit_sha1), opts)
+      def get_unit(name)
+        get(units_path(name))
       end
 
-      def delete_unit(unit_sha1)
-        opts = { dir: false, recursive: false }
-        delete(unit_path(unit_sha1), opts)
+      def create_unit(name, unit)
+        put(units_path(name), unit)
+      end
+
+      alias_method :update_unit, :create_unit
+
+      def delete_unit(name)
+        delete(units_path(name))
       end
 
       private
 
-      def unit_path(*parts)
-        resource_path(UNIT_RESOURCE, *parts)
+      def units_path(*parts)
+        resource_path(UNITS_RESOURCE, *parts)
       end
 
     end

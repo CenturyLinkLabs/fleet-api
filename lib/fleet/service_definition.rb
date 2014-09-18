@@ -1,52 +1,29 @@
-require 'digest/sha1'
-
 module Fleet
   class ServiceDefinition
 
-    attr_reader :name
-
-    def initialize(name, service_def={})
-      @name = name
+    def initialize(service_def={})
       @service_def = service_def
     end
 
     def to_unit
-      { 'Raw' => raw }
-    end
-
-    def to_job
       {
-        'Name' => name,
-        'UnitHash' => sha1_byte_array
+        'desiredState' => 'loaded',
+        'options' => options
       }
-    end
-
-    def sha1
-      Digest::SHA1.hexdigest raw
     end
 
     private
 
-    def raw
-      raw_string = ''
-
-      @service_def.each do |heading, section|
-        raw_string += "[#{heading}]\n"
-
-        if section.is_a?(Enumerable)
-          section.each do |key, value|
-            raw_string += "#{key}=#{value}\n"
-          end
+    def options
+      @service_def.each_with_object([]) do |(section, options), h|
+        options.each do |name, value|
+          h << {
+            'section' => section,
+            'name' => name,
+            'value' => value
+          }
         end
-
-        raw_string += "\n"
       end
-
-      raw_string.chomp
-    end
-
-    def sha1_byte_array
-      Digest::SHA1.digest(raw).unpack('C20')
     end
   end
 end

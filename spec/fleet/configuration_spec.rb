@@ -20,8 +20,14 @@ describe Fleet::Configuration do
     end
 
     describe 'fleet_api_url' do
-      it 'is matches DEFAULT_ETCD_API_URL' do
-        expect(subject.fleet_api_url).to eq Fleet::Configuration::DEFAULT_ETCD_API_URL
+      it 'is matches DEFAULT_FLEET_API_URL' do
+        expect(subject.fleet_api_url).to eq Fleet::Configuration::DEFAULT_FLEET_API_URL
+      end
+    end
+
+    describe 'fleet_api_version' do
+      it 'is matches DEFAULT_FLEET_API_VERSION' do
+        expect(subject.fleet_api_version).to eq Fleet::Configuration::DEFAULT_FLEET_API_VERSION
       end
     end
 

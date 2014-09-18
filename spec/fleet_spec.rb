@@ -38,15 +38,20 @@ describe Fleet do
     let(:url) { 'http://foo.com/bar' }
 
     before do
-      stub_const('Fleet::Configuration::DEFAULT_ETCD_API_URL', url)
+      stub_const('Fleet::Configuration::DEFAULT_FLEET_API_URL', url)
       Fleet.reset
     end
 
-    it 'defaults to the value of DEFAULT_ETCD_API_URL' do
+    it 'defaults to the value of DEFAULT_FLEET_API_URL' do
       expect(Fleet.fleet_api_url).to eq url
     end
   end
 
+  describe '.fleet_api_version' do
+    it 'defaults to v1-alpha' do
+      expect(Fleet.fleet_api_version).to eq 'v1-alpha'
+    end
+  end
   describe '.open_timeout' do
     it 'defaults to 2' do
       expect(Fleet.open_timeout).to eq 2

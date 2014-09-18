@@ -7,7 +7,7 @@ describe Fleet::Connection do
     subject { Fleet::Client.new.connection }
 
     handlers = [
-      Faraday::Request::UrlEncoded,
+      FaradayMiddleware::EncodeJson,
       FaradayMiddleware::ParseJson,
       Fleet::Middleware::Response::RaiseError,
       FaradayMiddleware::FollowRedirects,

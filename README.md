@@ -8,14 +8,6 @@ Provides a Ruby wrapper around the CoreOS Fleet API.
 
 The client allows programmatic access to most of the *fleetctl* commands including the ability to load, start, stop, unload and destroy unit files.
 
-At this point, there is no official Fleet API (though one is [in the works](https://github.com/coreos/fleet/blob/master/Documentation/api-v1-alpha.md)) so this library mimcs the behavior of the *fleetctl* command line tool and simply writes data to the [etcd]() key-value-store. The Fleet daemon reads data out of specific keys in etcd and processes it as appropiate.
-
-As work on the actual Fleet API progresses, this library will be refactored to use the real API.
-
-An alternative implementation is available in the [cloudspace/ruby-fleetctl](https://github.com/cloudspace/ruby-fleetctl) gem. The *ruby-fleetctl* gem takes a different approach and uses SSH to interact directly with the *fleetctl* binary to send commands. Our approach of writing directly to etcd cuts out the *fleetctl* middleman but is in more danger of being broken by future releases since we're effectively using a "private API".
-
-The current version of the *fleet-api* gem is known to work with version 0.6.0 of Fleet.
-
 ### Installation
 
 Install the gem directly:
@@ -34,12 +26,11 @@ Configure the URL for the etcd API:
     require 'fleet'
 
     Fleet.configure do |fleet|
-      fleet.fleet_api_url = 'http://10.1.42.1:4001'
+      fleet.fleet_api_url = 'http://10.1.42.1:4002'
     end
 
 If you don't provide an explicit value for the `.fleet_api_url` attribute, it will default to using the value of the `FLEETCTL_ENDPOINT` environment variable.
 
-**Note: since this Fleet API is not yet available in the stable version of CoreOS, the URL value provided must be the endpoint for the etcd API.**
 
 #### Service Definitions
 

@@ -13,7 +13,7 @@ module Fleet
       }
 
       Faraday.new(options) do |faraday|
-        faraday.request :url_encoded
+        faraday.request :json
         faraday.response :json
         faraday.response :raise_fleet_error
         faraday.response :follow_redirects

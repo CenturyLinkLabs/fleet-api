@@ -4,10 +4,9 @@ module Fleet
     attr_reader :error_code
     attr_reader :cause
 
-    def initialize(msg, error_code=nil, cause=nil)
+    def initialize(msg, error_code=nil)
       super(msg)
       @error_code = error_code
-      @cause = cause
     end
 
     HTTP_CODE_MAP = {

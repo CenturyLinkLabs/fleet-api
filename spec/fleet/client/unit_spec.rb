@@ -12,65 +12,80 @@ describe Fleet::Client::Unit do
       allow(subject).to receive(:get).and_return(response)
     end
 
-    it 'GETs the Fleet unit key' do
+    it 'GETs all Fleet units' do
       expect(subject).to receive(:get)
-        .with("v2/keys/_coreos.com/fleet/unit")
+        .with("v1-alpha/units")
         .and_return(response)
 
       subject.list_units
     end
 
-    it 'returns the job response' do
+    it 'returns the unit response' do
       expect(subject.list_units).to eql(response)
+    end
+  end
+
+  describe '#get_unit' do
+
+    let(:name) { 'foo.service' }
+
+    before do
+      allow(subject).to receive(:get).and_return(response)
+    end
+
+    it 'GETs the Fleet unit' do
+      expect(subject).to receive(:get)
+        .with("v1-alpha/units/#{name}")
+        .and_return(response)
+
+      subject.get_unit(name)
+    end
+
+    it 'returns the unit response' do
+      expect(subject.get_unit(name)).to eql(response)
     end
   end
 
   describe '#create_unit' do
 
-    let(:sha) { '33ef9ba9029c' }
-    let(:unit_def) { { exec_start: '/bin/bash' } }
+    let(:name) { 'foo.service' }
+    let(:options) { { exec_start: '/bin/bash' } }
 
     before do
       allow(subject).to receive(:put).and_return(response)
     end
 
     it 'PUTs the unit def to the Fleet unit key' do
-      opts = {
-        querystring: { 'prevExist' => false },
-        body: { value: unit_def.to_json }
-      }
-
       expect(subject).to receive(:put)
-        .with("v2/keys/_coreos.com/fleet/unit/#{sha}", opts)
+        .with("v1-alpha/units/#{name}", options)
         .and_return(response)
 
-      subject.create_unit(sha, unit_def)
+      subject.create_unit(name, options)
     end
 
-    it 'returns the job response' do
-      expect(subject.create_unit(sha, unit_def)).to eql(response)
+    it 'returns the unit response' do
+      expect(subject.create_unit(name, options)).to eql(response)
     end
   end
 
   describe '#delete_unit' do
 
-    let(:sha) { '33ef9ba9029c' }
+    let(:name) { 'foo.service' }
 
     before do
       allow(subject).to receive(:delete).and_return(response)
     end
 
-    it 'DELETEs the named Fleet unit key' do
-      opts = { dir: false, recursive: false }
+    it 'DELETEs the named Fleet unit' do
       expect(subject).to receive(:delete)
-        .with("v2/keys/_coreos.com/fleet/unit/#{sha}", opts)
+        .with("v1-alpha/units/#{name}")
         .and_return(response)
 
-      subject.delete_unit(sha)
+      subject.delete_unit(name)
     end
 
     it 'returns the job response' do
-      expect(subject.delete_unit(sha)).to eql(response)
+      expect(subject.delete_unit(name)).to eql(response)
     end
   end
 end

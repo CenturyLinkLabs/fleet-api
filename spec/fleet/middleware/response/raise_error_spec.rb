@@ -17,12 +17,11 @@ describe Fleet::Middleware::Response::RaiseError do
 
       let(:message) { 'not found' }
       let(:error_code) { 999 }
-      let(:cause) { 'just because ' }
 
       let(:env) do
         {
           status: 404,
-          body: "{ \"message\": \"#{message}\", \"errorCode\": #{error_code}, \"cause\": \"#{cause}\" }"
+          body: "{ \"error\": { \"message\": \"#{message}\", \"code\": #{error_code} } }"
         }
       end
 
@@ -45,14 +44,6 @@ describe Fleet::Middleware::Response::RaiseError do
           expect(ex.error_code).to eq error_code
         end
       end
-
-      it 'sets the cause on the exception' do
-        begin
-          subject.on_complete(env)
-        rescue Fleet::NotFound => ex
-          expect(ex.cause).to eq cause
-        end
-      end
     end
 
     context 'when HTTP status is an unknown error' do
@@ -60,7 +51,7 @@ describe Fleet::Middleware::Response::RaiseError do
       let(:env) do
         {
           status: 499,
-          body: "{ \"message\": \"err\" }"
+          body: "{ \"error\" : { \"message\": \"err\" } }"
         }
       end
 

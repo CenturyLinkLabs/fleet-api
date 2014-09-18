@@ -18,9 +18,8 @@ module Fleet::Middleware
         class_name = Fleet::Error::HTTP_CODE_MAP.fetch(status, 'Error')
 
         fail Fleet.const_get(class_name).new(
-          error['message'],
-          error['errorCode'],
-          error['cause'])
+          error['error']['message'],
+          error['error']['code'])
       end
 
       private
@@ -28,7 +27,7 @@ module Fleet::Middleware
       def parse_error(body)
         JSON.parse(body)
       rescue StandardError
-        { 'message' => body }
+        { 'error' => { 'message' => body } }
       end
     end
 

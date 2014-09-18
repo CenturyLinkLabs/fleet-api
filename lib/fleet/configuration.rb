@@ -7,6 +7,7 @@ module Fleet
     VALID_OPTIONS_KEYS = [
       :adapter,
       :fleet_api_url,
+      :fleet_api_version,
       :open_timeout,
       :read_timeout,
       :ssl_options,
@@ -15,7 +16,8 @@ module Fleet
     ]
 
     DEFAULT_ADAPTER = Faraday.default_adapter
-    DEFAULT_ETCD_API_URL = ENV['FLEETCTL_ENDPOINT']
+    DEFAULT_FLEET_API_URL = ENV['FLEETCTL_ENDPOINT']
+    DEFAULT_FLEET_API_VERSION = 'v1-alpha'
     DEFAULT_OPEN_TIMEOUT = 2
     DEFAULT_READ_TIMEOUT = 5
     DEFAULT_SSL_OPTIONS = { verify: false }
@@ -34,7 +36,8 @@ module Fleet
 
     def reset
       self.adapter = DEFAULT_ADAPTER
-      self.fleet_api_url = DEFAULT_ETCD_API_URL
+      self.fleet_api_url = DEFAULT_FLEET_API_URL
+      self.fleet_api_version = DEFAULT_FLEET_API_VERSION
       self.open_timeout = DEFAULT_OPEN_TIMEOUT
       self.read_timeout = DEFAULT_READ_TIMEOUT
       self.ssl_options = DEFAULT_SSL_OPTIONS
