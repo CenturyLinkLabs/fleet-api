@@ -10,7 +10,7 @@ The client allows programmatic access to most of the *fleetctl* commands includi
 
 At this point, there is no official Fleet API (though one is [in the works](https://github.com/coreos/fleet/blob/master/Documentation/api-v1-alpha.md)) so this library mimcs the behavior of the *fleetctl* command line tool and simply writes data to the [etcd]() key-value-store. The Fleet daemon reads data out of specific keys in etcd and processes it as appropiate.
 
-As work on the actual Fleet API progresses, this library will be refactored to use the real API.
+As work on the actual Fleet API progresses, this library will be refactored to use the real API. An initial pass at implementing a client for the official Fleet API can be found on the [feature/official-api](https://github.com/CenturyLinkLabs/fleet-api/tree/feature/official-api) branch.
 
 An alternative implementation is available in the [cloudspace/ruby-fleetctl](https://github.com/cloudspace/ruby-fleetctl) gem. The *ruby-fleetctl* gem takes a different approach and uses SSH to interact directly with the *fleetctl* binary to send commands. Our approach of writing directly to etcd cuts out the *fleetctl* middleman but is in more danger of being broken by future releases since we're effectively using a "private API".
 
