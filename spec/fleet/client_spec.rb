@@ -28,16 +28,12 @@ describe Fleet::Client do
     let(:name) { 'foo.service' }
     let(:service_def) { { 'Unit' => { 'Description' => 'bar' } } }
     let(:sd) { Fleet::ServiceDefinition.new(name, service_def) }
-    let(:fleet_state) do
-      { 'node' => { 'value' => '{ "loadState": "loaded" }' } }
-    end
 
     context 'when a service definition is provided' do
       before do
         allow(subject).to receive(:create_unit).and_return(nil)
         allow(subject).to receive(:create_job).and_return(nil)
         allow(subject).to receive(:update_job_target_state).and_return(nil)
-        allow(subject).to receive(:get_state).and_return(fleet_state)
         allow(Fleet::ServiceDefinition).to receive(:new).and_return(sd)
       end
 
@@ -62,9 +58,20 @@ describe Fleet::Client do
         subject.load(name, service_def)
       end
 
-      it 'checks the job state' do
-        expect(subject).to receive(:get_state).with(sd.name)
-        subject.load(name, service_def)
+      context 'when sync=true is set' do
+
+        let(:fleet_state) do
+          { 'node' => { 'value' => '{ "loadState": "loaded" }' } }
+        end
+
+        before do
+          allow(subject).to receive(:get_state).and_return(fleet_state)
+        end
+
+        it 'checks the job state' do
+          expect(subject).to receive(:get_state).with(sd.name)
+          subject.load(name, service_def, sync=true)
+        end
       end
 
       context 'when #create_unit raises PreconditionFailed' do
@@ -120,7 +127,6 @@ describe Fleet::Client do
 
       before do
         allow(subject).to receive(:update_job_target_state).and_return(nil)
-        allow(subject).to receive(:get_state).and_return(fleet_state)
       end
 
       it 'does NOT invoke #create_unit' do
@@ -140,9 +146,20 @@ describe Fleet::Client do
         subject.load(name)
       end
 
-      it 'checks the job state' do
-        expect(subject).to receive(:get_state).with(sd.name)
-        subject.load(name)
+      context 'when sync=true is set' do
+
+        let(:fleet_state) do
+          { 'node' => { 'value' => '{ "loadState": "loaded" }' } }
+        end
+
+        before do
+          allow(subject).to receive(:get_state).and_return(fleet_state)
+        end
+
+        it 'checks the job state' do
+          expect(subject).to receive(:get_state).with(sd.name)
+          subject.load(name, nil, sync=true)
+        end
       end
     end
   end
@@ -165,13 +182,8 @@ describe Fleet::Client do
   describe '#stop' do
     let(:service_name) { 'foo.service' }
 
-    let(:fleet_state) do
-      { 'node' => { 'value' => '{ "load_state": "loaded" }' } }
-    end
-
     before do
       allow(subject).to receive(:update_job_target_state)
-      allow(subject).to receive(:get_state).and_return(fleet_state)
     end
 
     it 'invokes #update_job_target_state' do
@@ -181,9 +193,20 @@ describe Fleet::Client do
       subject.stop(service_name)
     end
 
-    it 'checks the job state' do
-      expect(subject).to receive(:get_state).with(service_name)
-      subject.stop(service_name)
+    context 'when sync=true is set' do
+
+      let(:fleet_state) do
+        { 'node' => { 'value' => '{ "load_state": "loaded" }' } }
+      end
+
+      before do
+        allow(subject).to receive(:get_state).and_return(fleet_state)
+      end
+
+      it 'checks the job state' do
+        expect(subject).to receive(:get_state).with(service_name)
+        subject.stop(service_name, sync=true)
+      end
     end
   end
 
@@ -192,7 +215,6 @@ describe Fleet::Client do
 
     before do
       allow(subject).to receive(:update_job_target_state)
-      allow(subject).to receive(:get_state).and_raise(Fleet::NotFound, 'boom')
     end
 
     it 'invokes #update_job_target_state' do
@@ -202,33 +224,40 @@ describe Fleet::Client do
       subject.unload(service_name)
     end
 
-    it 'checks the job state' do
-      expect(subject).to receive(:get_state).with(service_name)
-      subject.unload(service_name)
-    end
-
-    context 'when the unload state cannot be achieved' do
-
-      let(:fleet_state) do
-        { 'node' => { 'value' => '{ "load_state": "loaded" }' } }
-      end
+    context 'when sync=true is set' do
 
       before do
-        allow(subject).to receive(:get_state).and_return(fleet_state)
-        allow(subject).to receive(:sleep)
+        allow(subject).to receive(:get_state).and_raise(Fleet::NotFound, 'boom')
       end
 
-      it 're-checks the state 20 times' do
-        expect(subject).to receive(:get_state).exactly(20).times
-        subject.unload(service_name) rescue nil
+      it 'checks the job state' do
+        expect(subject).to receive(:get_state).with(service_name)
+        subject.unload(service_name, sync=true)
       end
 
-      it 'raises an error' do
-        expect do
-          subject.unload(service_name)
-        end.to raise_error(Fleet::Error)
-      end
+      context 'when the unload state cannot be achieved' do
 
+        let(:fleet_state) do
+          { 'node' => { 'value' => '{ "load_state": "loaded" }' } }
+        end
+
+        before do
+          allow(subject).to receive(:get_state).and_return(fleet_state)
+          allow(subject).to receive(:sleep)
+        end
+
+        it 're-checks the state 20 times' do
+          expect(subject).to receive(:get_state).exactly(20).times
+          subject.unload(service_name, sync=true) rescue nil
+        end
+
+        it 'raises an error' do
+          expect do
+            subject.unload(service_name, sync=true)
+          end.to raise_error(Fleet::Error)
+        end
+
+      end
     end
   end
 
@@ -237,7 +266,6 @@ describe Fleet::Client do
 
     before do
       allow(subject).to receive(:delete_job).and_return(nil)
-      allow(subject).to receive(:get_state).and_raise(Fleet::NotFound, 'boom')
     end
 
     it 'invokes #delete_job' do
@@ -249,9 +277,16 @@ describe Fleet::Client do
       subject.destroy(service_name)
     end
 
-    it 'checks the job state' do
-      expect(subject).to receive(:get_state).with(service_name)
-      subject.destroy(service_name)
+    context 'when sync=true is set' do
+
+      before do
+        allow(subject).to receive(:get_state).and_raise(Fleet::NotFound, 'boom')
+      end
+
+      it 'checks the job state' do
+        expect(subject).to receive(:get_state).with(service_name)
+        subject.destroy(service_name, sync=true)
+      end
     end
   end
 
