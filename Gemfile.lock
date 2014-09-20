@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fleet-api (0.6.0)
+    fleet-api (0.6.1)
       faraday (= 0.8.9)
       faraday_middleware (= 0.9.0)
 

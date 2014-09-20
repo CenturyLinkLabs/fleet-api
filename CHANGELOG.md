@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.6.1 - 2014-09-20
+------------------
+
+### Fixed
+- Default to async operations to address performance issues
+
 0.6.0 - 2014-09-05
 ------------------
 
