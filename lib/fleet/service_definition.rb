@@ -35,7 +35,11 @@ module Fleet
 
         if section.is_a?(Enumerable)
           section.each do |key, value|
-            raw_string += "#{key}=#{value}\n"
+            if value.is_a?(Enumerable)
+              value.each { |command| raw_string += "#{key}=#{command}\n" }
+            else
+              raw_string += "#{key}=#{value}\n"
+            end
           end
         end
 
