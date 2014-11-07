@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Support for mutl-value options in unit file
+- Enforcement of Fleet service naming conventions
 
 0.6.1 - 2014-09-20
 ------------------

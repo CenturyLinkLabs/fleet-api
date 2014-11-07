@@ -162,6 +162,15 @@ describe Fleet::Client do
         end
       end
     end
+
+    context 'when the supplied name is invalid' do
+
+      let(:name) { 'foo!.service' }
+
+      it 'raises an ArgumentError' do
+        expect { subject.load(name, nil) }.to raise_error(ArgumentError, /only contain/)
+      end
+    end
   end
 
   describe '#start' do
