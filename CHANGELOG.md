@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.8.0 - 2014-11-07
+------------------
+
+### Added
+- Support for mutl-value options in unit file
+
 0.6.1 - 2014-09-20
 ------------------
 
