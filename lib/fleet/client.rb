@@ -32,6 +32,29 @@ module Fleet
     include Fleet::Client::State
     include Fleet::Client::Unit
 
+    def list
+      machines = list_machines['node']['nodes'] || []
+      machine_ips = machines.each_with_object({}) do |machine, h|
+        m = JSON.parse(machine['nodes'].first['value'])
+        h[m['ID']] = m['PublicIP']
+      end
+
+      states = list_states['node']['nodes'] || []
+      states.map do |service|
+        s = JSON.parse(service['value'])
+        machine_id = s['machineState']['ID']
+
+        {
+          name: service['key'].split('/').last,
+          load_state: s['loadState'],
+          active_state: s['activeState'],
+          sub_state: s['subState'],
+          machine_id: machine_id,
+          machine_ip: machine_ips[machine_id]
+        }
+      end
+    end
+
     def load(name, service_def=nil, sync=false)
 
       unless name =~ /\A[a-zA-Z0-9:_.@-]+\Z/

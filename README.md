@@ -2,7 +2,7 @@ fleet-api
 =========
 
 [![Gem Version](https://badge.fury.io/rb/fleet-api.svg)](http://badge.fury.io/rb/fleet-api)
-[![Build Status](https://api.shippable.com/projects/53f3a91a5491229d0207e4d9/badge/master)](https://www.shippable.com/projects/53f3a91a5491229d0207e4d9)
+[![Build Status](https://api.shippable.com/projects/540e7b283479c5ea8f9ebd66/badge?branchName=master)](https://www.shippable.com/projects/53f3a91a5491229d0207e4d9)
 
 Provides a Ruby wrapper around the CoreOS Fleet API.
 
@@ -64,6 +64,17 @@ This unit file would be represented as the following Ruby hash.
 	  }
 	}
 	
+If you need mutiple values for a single statement (like multiple `ExecStart` instructions) you can use an array of strings:
+
+	{
+	  'Unit' => {
+	    'Description' => 'Useless infinite loop'
+	  },
+	  'Service' => {
+	    'ExecStart' => ["/bin/bash -c \"while true; do sleep 1; done\"", "some other command"]
+	  }
+	}
+
 #### Loading a Unit File
 
 Equivalent of `fleetctl load`:
@@ -116,3 +127,10 @@ Equivalent of `fleetctl status`:
 
     client = Fleet.new
     client.status('forever.service')
+
+#### Listing Services
+
+Equivalent of `fleetctl list-units`:
+
+    client = Fleet.new
+    client.list
