@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+0.9.0 - 2015-01-14
+------------------
+
+### Added
+- Support for listing all loaded units
+
 0.8.0 - 2014-11-07
 ------------------
 
