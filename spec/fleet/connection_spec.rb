@@ -62,7 +62,7 @@ describe Fleet::Connection do
 
     describe 'ssl' do
       it 'matches the specified SSL options' do
-        expect(subject.ssl).to eq ssl_options
+        expect(subject.ssl.to_h).to include(ssl_options)
       end
     end
 

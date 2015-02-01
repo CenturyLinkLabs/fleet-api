@@ -15,7 +15,8 @@ module Fleet
       Faraday.new(options) do |faraday|
         faraday.request :url_encoded
         faraday.response :json
-        faraday.response :raise_fleet_error
+        # faraday.response :raise_fleet_error
+        faraday.use Fleet::Middleware::Response::RaiseError
         faraday.response :follow_redirects
         faraday.adapter adapter
       end
