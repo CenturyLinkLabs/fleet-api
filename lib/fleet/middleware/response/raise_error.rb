@@ -32,6 +32,6 @@ module Fleet::Middleware
       end
     end
 
-    Faraday.register_middleware :response, raise_fleet_error: -> { RaiseError }
+    # Faraday.register_middleware :response, raise_fleet_error: -> { RaiseError }
   end
 end
