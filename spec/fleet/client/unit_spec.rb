@@ -14,7 +14,7 @@ describe Fleet::Client::Unit do
 
     it 'GETs all Fleet units' do
       expect(subject).to receive(:get)
-        .with("v1-alpha/units")
+        .with("fleet/v1/units")
         .and_return(response)
 
       subject.list_units
@@ -35,7 +35,7 @@ describe Fleet::Client::Unit do
 
     it 'GETs the Fleet unit' do
       expect(subject).to receive(:get)
-        .with("v1-alpha/units/#{name}")
+        .with("fleet/v1/units/#{name}")
         .and_return(response)
 
       subject.get_unit(name)
@@ -57,7 +57,7 @@ describe Fleet::Client::Unit do
 
     it 'PUTs the unit def to the Fleet unit key' do
       expect(subject).to receive(:put)
-        .with("v1-alpha/units/#{name}", options)
+        .with("fleet/v1/units/#{name}", options)
         .and_return(response)
 
       subject.create_unit(name, options)
@@ -78,7 +78,7 @@ describe Fleet::Client::Unit do
 
     it 'DELETEs the named Fleet unit' do
       expect(subject).to receive(:delete)
-        .with("v1-alpha/units/#{name}")
+        .with("fleet/v1/units/#{name}")
         .and_return(response)
 
       subject.delete_unit(name)

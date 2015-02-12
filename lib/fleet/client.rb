@@ -66,7 +66,7 @@ module Fleet
     protected
 
     def resource_path(resource, *parts)
-      parts.unshift(resource).unshift(fleet_api_version).join('/')
+      parts.unshift('fleet', fleet_api_version, resource).join('/')
     end
   end
 end

@@ -15,7 +15,7 @@ describe Fleet::Client::Machines do
     it 'GETs the Fleet machines key' do
       opts = { consistent: true, recursive: true, sorted: true }
       expect(subject).to receive(:get)
-        .with('v1-alpha/machines', opts)
+        .with('fleet/v1/machines', opts)
         .and_return(response)
 
       subject.list_machines

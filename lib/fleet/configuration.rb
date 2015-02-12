@@ -17,7 +17,7 @@ module Fleet
 
     DEFAULT_ADAPTER = Faraday.default_adapter
     DEFAULT_FLEET_API_URL = ENV['FLEETCTL_ENDPOINT']
-    DEFAULT_FLEET_API_VERSION = 'v1-alpha'
+    DEFAULT_FLEET_API_VERSION = 'v1'
     DEFAULT_OPEN_TIMEOUT = 2
     DEFAULT_READ_TIMEOUT = 5
     DEFAULT_SSL_OPTIONS = { verify: false }

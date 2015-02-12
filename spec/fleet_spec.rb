@@ -48,8 +48,8 @@ describe Fleet do
   end
 
   describe '.fleet_api_version' do
-    it 'defaults to v1-alpha' do
-      expect(Fleet.fleet_api_version).to eq 'v1-alpha'
+    it 'defaults to v1' do
+      expect(Fleet.fleet_api_version).to eq 'v1'
     end
   end
   describe '.open_timeout' do
