@@ -17,11 +17,21 @@ module Fleet
     def options
       @service_def.each_with_object([]) do |(section, options), h|
         options.each do |name, value|
-          h << {
-            'section' => section,
-            'name' => name,
-            'value' => value
-          }
+          if value.is_a?(Enumerable)
+            value.each do |v|
+              h << {
+              'section' => section,
+              'name' => name,
+              'value' => v
+              }
+            end
+          else
+            h << {
+              'section' => section,
+              'name' => name,
+              'value' => value
+            }
+          end
         end
       end
     end

@@ -8,6 +8,7 @@ describe Fleet::ServiceDefinition do
         'Description' => 'infinite loop'
       },
       'Service' => {
+        'ExecStartPre' => ['foo', 'bar'],
         'ExecStart' => "/bin/bash -c \"while true; do sleep 1; done\""
       }
     }
@@ -23,7 +24,9 @@ describe Fleet::ServiceDefinition do
         "desiredState" =>"loaded", 
         "options"=> [
           { "section" => "Unit", "name" => "Description", "value" => "infinite loop"}, 
-          {"section" => "Service", "name" => "ExecStart", "value" => "/bin/bash -c \"while true; do sleep 1; done\""}
+          { "section" => "Service", "name" => "ExecStartPre", "value" => "foo" },
+          { "section" => "Service", "name" => "ExecStartPre", "value" => "bar" },
+          { "section" => "Service", "name" => "ExecStart", "value" => "/bin/bash -c \"while true; do sleep 1; done\"" }
         ]
       }
 

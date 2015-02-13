@@ -54,6 +54,17 @@ This unit file would be represented as the following Ruby hash.
 	    'ExecStart' => "/bin/bash -c \"while true; do sleep 1; done\""
 	  }
 	}
+
+If you need mutiple values for a single statement (like multiple `ExecStart` instructions) you can use an array of strings:
+
+    {
+      'Unit' => {
+        'Description' => 'Useless infinite loop'
+      },
+      'Service' => {
+        'ExecStart' => ["/bin/bash -c \"while true; do sleep 1; done\"", "some other command"]
+      }
+    }
 	
 #### Loading a Unit File
 
