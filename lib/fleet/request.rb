@@ -22,7 +22,7 @@ module Fleet
           accept: 'application/json'
         }.merge(headers)
 
-        request.path = URI.escape(path)
+        request.path = URI.escape(path).gsub(/@/, '%40')
 
         case method
         when :delete, :get, :head

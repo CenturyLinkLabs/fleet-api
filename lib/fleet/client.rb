@@ -56,7 +56,7 @@ module Fleet
         end
 
         begin
-          create_unit(name, service_def.to_unit)
+          create_unit(name, service_def.to_unit(name))
         rescue Fleet::PreconditionFailed
         end
       else

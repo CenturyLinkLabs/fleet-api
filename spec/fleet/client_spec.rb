@@ -92,7 +92,7 @@ describe Fleet::Client do
 
       it 'invokes #create_unit' do
         expect(subject).to receive(:create_unit)
-          .with(name, sd.to_unit)
+          .with(name, sd.to_unit(name))
 
         subject.load(name, service_def)
       end

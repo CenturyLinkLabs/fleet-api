@@ -5,9 +5,9 @@ module Fleet
       @service_def = service_def
     end
 
-    def to_unit
+    def to_unit(name)
       {
-        'desiredState' => 'loaded',
+        'name' => name,
         'options' => options
       }
     end

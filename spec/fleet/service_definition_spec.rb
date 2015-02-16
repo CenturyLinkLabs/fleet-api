@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Fleet::ServiceDefinition do
 
+  let(:name) { 'foo.service' }
+
   let(:service_hash) do
     {
       'Unit' => {
@@ -21,7 +23,7 @@ describe Fleet::ServiceDefinition do
     it 'provides a fleet formatted unit definition' do
 
       expected = {
-        "desiredState" =>"loaded", 
+        "name" => name,
         "options"=> [
           { "section" => "Unit", "name" => "Description", "value" => "infinite loop"}, 
           { "section" => "Service", "name" => "ExecStartPre", "value" => "foo" },
@@ -30,7 +32,7 @@ describe Fleet::ServiceDefinition do
         ]
       }
 
-      expect(subject.to_unit).to eq expected
+      expect(subject.to_unit(name)).to eq expected
     end
   end
 end
