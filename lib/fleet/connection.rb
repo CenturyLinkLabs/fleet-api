@@ -1,24 +1,33 @@
-require 'faraday'
-require 'faraday_middleware'
-require 'fleet/middleware/response/raise_error'
+require 'excon'
 
 module Fleet
   module Connection
 
     def connection
       options = {
-        url: fleet_api_url,
-        ssl: ssl_options,
-        proxy: proxy
+        read_timeout: read_timeout,
+        connect_timeout: open_timeout,
+        headers: { 'User-Agent' => user_agent, 'Accept' => 'application/json' }
       }
 
-      Faraday.new(options) do |faraday|
-        faraday.request :json
-        faraday.response :json
-        faraday.response :raise_fleet_error
-        faraday.response :follow_redirects
-        faraday.adapter adapter
+      uri = URI.parse(fleet_api_url)
+      if uri.scheme == 'unix'
+        uri, options = 'unix:///', { socket: uri.path }.merge(options)
+      else
+        uri = fleet_api_url
       end
+
+      Excon.new(uri, options)
+    end
+
+    private
+
+    def user_agent
+      ua_chunks = []
+      ua_chunks << "fleet/#{Fleet::VERSION}"
+      ua_chunks << "(#{RUBY_ENGINE}; #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}; #{RUBY_PLATFORM})"
+      ua_chunks << "excon/#{Excon::VERSION}"
+      ua_chunks.join(' ')
     end
   end
 end

@@ -13,12 +13,6 @@ describe Fleet::Configuration do
 
   describe 'default values' do
 
-    describe 'adapter' do
-      it 'is matches DEFAULT_ADAPTER' do
-        expect(subject.adapter).to eq Fleet::Configuration::DEFAULT_ADAPTER
-      end
-    end
-
     describe 'fleet_api_url' do
       it 'is matches DEFAULT_FLEET_API_URL' do
         expect(subject.fleet_api_url).to eq Fleet::Configuration::DEFAULT_FLEET_API_URL

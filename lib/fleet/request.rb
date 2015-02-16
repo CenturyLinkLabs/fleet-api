@@ -1,3 +1,4 @@
+require 'json'
 require 'fleet/version'
 
 module Fleet
@@ -5,52 +6,54 @@ module Fleet
 
     private
 
-    [:get, :head, :put, :post, :delete].each do |method|
-      define_method(method) do |path, options={}, headers={}|
-        request(connection, method, path, options, headers)
+    [:get, :put, :delete].each do |method|
+      define_method(method) do |path, options={}|
+        request(connection, method, path, options)
       end
     end
 
-    def request(connection, method, path, options, headers)
-      options ||= {}
+    def request(connection, method, path, options)
+      req = {
+        path: escape_path(path),
+      }
 
-      response = connection.send(method) do |request|
-        request.options[:open_timeout] = open_timeout
-        request.options[:timeout] = read_timeout
-        request.headers = {
-          user_agent: user_agent,
-          accept: 'application/json'
-        }.merge(headers)
-
-        request.path = URI.escape(path).gsub(/@/, '%40')
-
-        case method
-        when :delete, :get, :head
-          request.params = options unless options.empty?
-        when :post, :put
-          if options.key?(:querystring)
-            request.params = options[:querystring]
-            request.body = options[:body]
-          else
-            request.body = options unless options.empty?
-          end
-        end
+      case method
+      when :get
+        req[:query] = options
+      when :put
+        req[:headers] = { 'Content-Type' => 'application/json' }
+        req[:body] = ::JSON.dump(options)
       end
 
-      response.body
-    rescue Faraday::Error::ConnectionFailed => ex
+      resp = connection.send(method, req)
+
+      if (400..600).include?(resp.status)
+        raise_error(resp)
+      end
+
+      case method
+      when :get
+        ::JSON.parse(resp.body)
+      else
+        true
+      end
+    rescue Excon::Errors::SocketError => ex
       raise Fleet::ConnectionError, ex.message
     end
 
     private
 
-    def user_agent
-      ua_chunks = []
-      ua_chunks << "fleet/#{Fleet::VERSION}"
-      ua_chunks << "(#{RUBY_ENGINE}; #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}; #{RUBY_PLATFORM})"
-      ua_chunks << "faraday/#{Faraday::VERSION}"
-      ua_chunks << "(#{adapter})"
-      ua_chunks.join(' ')
+    def escape_path(path)
+      URI.escape(path).gsub(/@/, '%40')
+    end
+
+    def raise_error(resp)
+      error = JSON.parse(resp.body)['error']
+      class_name = Fleet::Error::HTTP_CODE_MAP.fetch(resp.status, 'Error')
+
+      fail Fleet.const_get(class_name).new(
+        error['message'],
+        error['code'])
     end
   end
 end

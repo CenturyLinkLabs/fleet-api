@@ -52,6 +52,7 @@ describe Fleet do
       expect(Fleet.fleet_api_version).to eq 'v1'
     end
   end
+
   describe '.open_timeout' do
     it 'defaults to 2' do
       expect(Fleet.open_timeout).to eq 2
@@ -61,18 +62,6 @@ describe Fleet do
   describe '.read_timeout' do
     it 'defaults to 5' do
       expect(Fleet.read_timeout).to eq 5
-    end
-  end
-
-  describe '.ssl_options' do
-    it 'defaults to { verify: false }' do
-      expect(Fleet.ssl_options).to eq(verify: false)
-    end
-  end
-
-  describe '.proxy' do
-    it 'defaults to nil' do
-      expect(Fleet.proxy).to be_nil
     end
   end
 

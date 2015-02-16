@@ -1,26 +1,20 @@
-require 'faraday'
 require 'logger'
 
 module Fleet
   module Configuration
 
     VALID_OPTIONS_KEYS = [
-      :adapter,
       :fleet_api_url,
       :fleet_api_version,
       :open_timeout,
       :read_timeout,
-      :ssl_options,
-      :proxy,
       :logger
     ]
 
-    DEFAULT_ADAPTER = Faraday.default_adapter
-    DEFAULT_FLEET_API_URL = ENV['FLEETCTL_ENDPOINT']
+    DEFAULT_FLEET_API_URL = ENV['FLEETCTL_ENDPOINT'] || 'unix:///var/run/fleet.sock'
     DEFAULT_FLEET_API_VERSION = 'v1'
     DEFAULT_OPEN_TIMEOUT = 2
     DEFAULT_READ_TIMEOUT = 5
-    DEFAULT_SSL_OPTIONS = { verify: false }
     DEFAULT_LOGGER = ::Logger.new(STDOUT)
 
     attr_accessor(*VALID_OPTIONS_KEYS)
@@ -35,12 +29,10 @@ module Fleet
     end
 
     def reset
-      self.adapter = DEFAULT_ADAPTER
       self.fleet_api_url = DEFAULT_FLEET_API_URL
       self.fleet_api_version = DEFAULT_FLEET_API_VERSION
       self.open_timeout = DEFAULT_OPEN_TIMEOUT
       self.read_timeout = DEFAULT_READ_TIMEOUT
-      self.ssl_options = DEFAULT_SSL_OPTIONS
       self.logger = DEFAULT_LOGGER
     end
   end
