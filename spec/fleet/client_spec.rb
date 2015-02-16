@@ -23,6 +23,60 @@ describe Fleet::Client do
     end
   end
 
+  describe '#list' do
+
+    let(:machine_list) do
+      {
+        'machines' => [
+          { 'id' => '123', 'primaryIP' => '1.1.1.1' }
+        ]
+      }
+    end
+
+    let(:state_list) do
+      {
+        'states' => [
+          {
+            'hash' => 'abc123',
+            'machineID' => '123',
+            'name' => 'foo.service',
+            'systemdActiveState' => 'b',
+            'systemdLoadState' => 'a',
+            'systemdSubState' => 'c'
+          }
+        ]
+      }
+    end
+
+    before do
+      allow(subject).to receive(:list_machines).and_return(machine_list)
+      allow(subject).to receive(:list_states).and_return(state_list)
+    end
+
+    it 'looks-up the list of machines' do
+        expect(subject).to receive(:list_machines)
+        subject.list
+    end
+
+    it 'looks-up the list of job states' do
+        expect(subject).to receive(:list_states)
+        subject.list
+    end
+
+    it 'returns the list of units' do
+      expected = [{
+        name: 'foo.service',
+        load_state: 'a',
+        active_state: 'b',
+        sub_state: 'c',
+        machine_id: '123',
+        machine_ip: '1.1.1.1'
+      }]
+
+      expect(subject.list).to eq(expected)
+    end
+  end
+
   describe '#load' do
 
     let(:name) { 'foo.service' }

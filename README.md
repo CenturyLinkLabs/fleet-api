@@ -118,3 +118,10 @@ Equivalent of `fleetctl status`:
 
     client = Fleet.new
     client.status('forever.service')
+
+#### Listing Services
+
+Equivalent of `fleetctl list-units`:
+
+    client = Fleet.new
+    client.list

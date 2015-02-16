@@ -4,6 +4,7 @@ require 'fleet/request'
 require 'fleet/service_definition'
 require 'fleet/client/machines'
 require 'fleet/client/unit'
+require 'fleet/client/state'
 
 module Fleet
   class Client
@@ -22,6 +23,26 @@ module Fleet
 
     include Fleet::Client::Machines
     include Fleet::Client::Unit
+    include Fleet::Client::State
+
+    def list
+      machines = list_machines['machines'] || []
+      machine_ips = machines.each_with_object({}) do |machine, h|
+        h[machine['id']] = machine['primaryIP']
+      end
+
+      states = list_states['states'] || []
+      states.map do |service|
+        {
+          name: service['name'],
+          load_state: service['systemdLoadState'],
+          active_state: service['systemdActiveState'],
+          sub_state: service['systemdSubState'],
+          machine_id: service['machineID'],
+          machine_ip: machine_ips[service['machineID']]
+        }
+      end
+    end
 
     def load(name, service_def=nil)
 
