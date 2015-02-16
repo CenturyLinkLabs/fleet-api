@@ -46,6 +46,10 @@ module Fleet
 
     def load(name, service_def=nil)
 
+      unless name =~ /\A[a-zA-Z0-9:_.@-]+\Z/
+        raise ArgumentError, 'name may only contain [a-zA-Z0-9:_.@-]'
+      end
+
       if service_def
         unless service_def.is_a?(ServiceDefinition)
           service_def = ServiceDefinition.new(service_def)
