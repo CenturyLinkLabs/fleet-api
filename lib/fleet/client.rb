@@ -60,23 +60,23 @@ module Fleet
         rescue Fleet::PreconditionFailed
         end
       else
-        opts = { 'desiredState' => 'loaded' }
+        opts = { 'desiredState' => 'loaded', 'name' => name }
         update_unit(name, opts)
       end
     end
 
     def start(name)
-      opts = { 'desiredState' => 'launched' }
+      opts = { 'desiredState' => 'launched', 'name' => name }
       update_unit(name, opts)
     end
 
     def stop(name)
-      opts = { 'desiredState' => 'loaded' }
+      opts = { 'desiredState' => 'loaded', 'name' => name }
       update_unit(name, opts)
     end
 
     def unload(name)
-      opts = { 'desiredState' => 'inactive' }
+      opts = { 'desiredState' => 'inactive', 'name' => name }
       update_unit(name, opts)
     end
 

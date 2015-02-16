@@ -140,7 +140,7 @@ describe Fleet::Client do
 
       it 'invokes #update' do
         expect(subject).to receive(:update_unit)
-          .with(name, 'desiredState' => 'loaded')
+          .with(name, { 'desiredState' => 'loaded', 'name' => name })
 
         subject.load(name)
       end
@@ -165,7 +165,7 @@ describe Fleet::Client do
 
     it 'invokes #update_unit' do
       expect(subject).to receive(:update_unit)
-        .with(service_name, 'desiredState' => 'launched')
+        .with(service_name, { 'desiredState' => 'launched', 'name' => service_name })
 
       subject.start(service_name)
     end
@@ -180,7 +180,7 @@ describe Fleet::Client do
 
     it 'invokes #update_unit' do
       expect(subject).to receive(:update_unit)
-        .with(service_name, 'desiredState' => 'loaded')
+        .with(service_name, { 'desiredState' => 'loaded', 'name' => service_name })
 
       subject.stop(service_name)
     end
@@ -195,7 +195,7 @@ describe Fleet::Client do
 
     it 'invokes #update_unit' do
       expect(subject).to receive(:update_unit)
-        .with(service_name, 'desiredState' => 'inactive')
+        .with(service_name, { 'desiredState' => 'inactive', 'name' => service_name })
 
       subject.unload(service_name)
     end
