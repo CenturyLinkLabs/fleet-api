@@ -88,6 +88,16 @@ module Fleet
       get_unit(name)["currentState"].to_sym
     end
 
+    def get_unit_state(name)
+      options = { unitName: name }
+      states = list_states(options)
+      if states["states"]
+        states["states"].first
+      else
+        fail NotFound, "Unit '#{name}' not found"
+      end
+    end
+
     protected
 
     def resource_path(resource, *parts)

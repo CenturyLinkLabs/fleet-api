@@ -112,16 +112,23 @@ Equivalent of `fleetctl destroy`:
     client = Fleet.new
     client.destroy('forever.service')
     
-#### Retrieving Service Status
-
-Equivalent of `fleetctl status`:
-
-    client = Fleet.new
-    client.status('forever.service')
-
 #### Listing Services
 
 Equivalent of `fleetctl list-units`:
 
     client = Fleet.new
     client.list
+
+#### Retrieving Service Status
+
+Equivalent of `fleetctl status`:
+
+    client = Fleet.new
+    client.get_unit_state('forever.service')
+
+#### Retrieving a Unit File
+
+Retrieves contents and current state of a unit file:
+
+    client = Fleet.new
+    client.get_unit_file('foo.service')

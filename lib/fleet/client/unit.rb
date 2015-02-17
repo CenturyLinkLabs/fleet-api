@@ -12,6 +12,8 @@ module Fleet
         get(units_path(name))
       end
 
+      alias_method :get_unit_file, :get_unit
+
       def create_unit(name, unit)
         put(units_path(name), unit)
       end

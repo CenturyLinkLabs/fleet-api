@@ -239,4 +239,43 @@ describe Fleet::Client do
       expect(subject.status(service_name)).to eq(:launched)
     end
   end
+
+  describe '#get_unit_state' do
+
+    let(:service_name) { 'foo.service' }
+
+    let(:states) do
+      { 'states' => [] }
+    end
+
+    before do
+      allow(subject).to receive(:list_states).and_return(states)
+    end
+
+    it 'retrieves the states from the fleet API' do
+      expect(subject).to receive(:list_states).with({ unitName: service_name })
+      subject.get_unit_state(service_name)
+    end
+
+    context 'when unit is found' do
+
+      let(:states) do
+        { 'states' => [{ 'name' => 'foo.service' }, {}] }
+      end
+
+      it 'returns the first matching state hash' do
+        expect(subject.get_unit_state(service_name)).to eq(states['states'].first)
+      end
+    end
+
+    context 'when unit is NOT found' do
+
+      let(:states) { {} }
+
+      it 'returns the first matching state hash' do
+        expect { subject.get_unit_state(service_name) }.to(
+          raise_error(Fleet::NotFound))
+      end
+    end
+  end
 end

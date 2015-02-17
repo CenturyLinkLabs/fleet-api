@@ -4,8 +4,8 @@ module Fleet
 
       STATE_RESOURCE = 'state'
 
-      def list_states
-        get(state_path, nil)
+      def list_states(options={})
+        get(state_path, options)
       end
 
       private

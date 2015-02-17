@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Fleet::Client::Machines do
+describe Fleet::Client::State do
 
   subject { Fleet::Client.new }
 
@@ -14,7 +14,7 @@ describe Fleet::Client::Machines do
 
     it 'GETs the state resource' do
       expect(subject).to receive(:get)
-        .with('fleet/v1/state', nil)
+        .with('fleet/v1/state', {})
         .and_return(response)
 
       subject.list_states
