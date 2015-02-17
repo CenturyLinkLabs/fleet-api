@@ -21,15 +21,15 @@ Alternatively, add this line to your application's Gemfile:
 
 ### Usage
 
-Configure the URL for the etcd API:
+Configure the URL for the Fleet API:
 
     require 'fleet'
 
     Fleet.configure do |fleet|
-      fleet.fleet_api_url = 'http://10.1.42.1:4002'
+      fleet.fleet_api_url = 'http://10.1.42.1:49153'
     end
 
-If you don't provide an explicit value for the `.fleet_api_url` attribute, it will default to using the value of the `FLEETCTL_ENDPOINT` environment variable.
+If you don't provide an explicit value for the `.fleet_api_url` attribute, it will default to using the value of the `FLEETCTL_ENDPOINT` environment variable (if present) or the socket at `unix:///var/run/fleet.sock`.
 
 
 #### Service Definitions

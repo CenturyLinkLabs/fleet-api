@@ -1,6 +1,35 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+1.0.0 - 2015-02-17
+------------------
+
+### Added
+- Support for official Fleet API (no longer reading/writing directly from/to etcd)
+- New get_unit_state and get_unit_file methods
+
+### Fixed
+- Proper encoding of @ symbol when submitting unit templates
+
+0.9.0 - 2015-01-14
+------------------
+
+### Added
+- Support for listing all loaded units
+
+0.8.0 - 2014-11-07
+------------------
+
+### Added
+- Support for mutl-value options in unit file
+- Enforcement of Fleet service naming conventions
+
+0.6.1 - 2014-09-20
+------------------
+
+### Fixed
+- Default to async operations to address performance issues
+
 0.6.0 - 2014-09-05
 ------------------
 
