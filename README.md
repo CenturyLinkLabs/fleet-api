@@ -66,9 +66,9 @@ If you need mutiple values for a single statement (like multiple `ExecStart` ins
       }
     }
 	
-#### Loading a Unit File
+#### Submitting a Unit File
 
-Equivalent of `fleetctl load`:
+Equivalent of `fleetctl submit`:
 
 	service = {
 	  'Unit' => {
@@ -80,9 +80,16 @@ Equivalent of `fleetctl load`:
 	}
 	
 	client = Fleet.new
-	client.load('forever.service', service)
+	client.submit('forever.service', service)
 	
-Note that the name you pass-in as the first parameter to the `.load` method should end in ".service"
+Note that the name you pass-in as the first parameter to the `.submit` method should end in ".service"
+
+#### Loading a Unit File
+
+Equivalent of `fleetctl load`:
+
+	client = Fleet.new
+	client.load('forever.service')
 
 #### Starting a Service
 

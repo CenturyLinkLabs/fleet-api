@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+1.1.0 - 2015-02-19
+------------------
+
+### Added
+- New submit method for submitting units without loading them
+
+### Fixed
+- Error where units are not loaded when submitted via the load method
+- Out-dated Gemfile.lock
+
 1.0.0 - 2015-02-17
 ------------------
 

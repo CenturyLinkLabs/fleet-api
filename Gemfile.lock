@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fleet-api (0.6.0)
+    fleet-api (1.1.0)
       excon (>= 0.27.4)
 
 GEM
@@ -9,7 +9,7 @@ GEM
   specs:
     diff-lcs (1.2.5)
     docile (1.1.5)
-    excon (0.41.0)
+    excon (0.44.2)
     multi_json (1.10.1)
     rake (10.3.2)
     rspec (3.0.0)
