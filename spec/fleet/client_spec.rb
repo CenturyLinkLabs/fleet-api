@@ -77,72 +77,50 @@ describe Fleet::Client do
     end
   end
 
-  describe '#load' do
-
+  describe '#submit' do
     let(:name) { 'foo.service' }
     let(:service_def) { { 'Unit' => { 'Description' => 'bar' } } }
     let(:sd) { Fleet::ServiceDefinition.new(service_def) }
     let(:response) { double(:response) }
 
-    context 'when a service definition is provided' do
+    before do
+      allow(subject).to receive(:create_unit).and_return(response)
+      allow(Fleet::ServiceDefinition).to receive(:new).and_return(sd)
+    end
+
+    it 'invokes #create_unit' do
+      expect(subject).to receive(:create_unit)
+        .with(name, sd.to_unit(name))
+
+      subject.submit(name, service_def)
+    end
+
+    it 'returns the #create_unit response' do
+      r = subject.submit(name, service_def)
+      expect(r).to eq response
+    end
+
+    context 'when #create_unit raises PreconditionFailed' do
+
       before do
-        allow(subject).to receive(:create_unit).and_return(response)
-        allow(Fleet::ServiceDefinition).to receive(:new).and_return(sd)
+        allow(subject).to receive(:create_unit)
+          .and_raise(Fleet::PreconditionFailed.new('boom'))
       end
 
-      it 'invokes #create_unit' do
-        expect(subject).to receive(:create_unit)
-          .with(name, sd.to_unit(name))
-
-        subject.load(name, service_def)
-      end
-
-      it 'returns the #create_unit response' do
-        r = subject.load(name, service_def)
-        expect(r).to eq response
-      end
-
-      context 'when #create_unit raises PreconditionFailed' do
-
-        before do
-          allow(subject).to receive(:create_unit)
-            .and_raise(Fleet::PreconditionFailed.new('boom'))
-        end
-
-        it 'does not blow up' do
-          expect { subject.load(name, service_def) }.to_not raise_error
-        end
-      end
-
-      context 'when #create_unit raises something other than PreconditionFailed' do
-
-        before do
-          allow(subject).to receive(:create_unit)
-            .and_raise(Fleet::BadRequest.new('boom'))
-        end
-
-        it 'propagates the error' do
-          expect { subject.load(name, service_def) }.to(raise_error(Fleet::BadRequest))
-        end
+      it 'does not blow up' do
+        expect { subject.submit(name, service_def) }.to_not raise_error
       end
     end
 
-    context 'when no service definition is provided' do
+    context 'when #create_unit raises something other than PreconditionFailed' do
 
       before do
-        allow(subject).to receive(:update_unit).and_return(response)
+        allow(subject).to receive(:create_unit)
+          .and_raise(Fleet::BadRequest.new('boom'))
       end
 
-      it 'does NOT invoke #create_unit' do
-        expect(subject).to_not receive(:create_unit)
-        subject.load(name)
-      end
-
-      it 'invokes #update' do
-        expect(subject).to receive(:update_unit)
-          .with(name, { 'desiredState' => 'loaded', 'name' => name })
-
-        subject.load(name)
+      it 'propagates the error' do
+        expect { subject.submit(name, service_def) }.to(raise_error(Fleet::BadRequest))
       end
     end
 
@@ -151,9 +129,46 @@ describe Fleet::Client do
       let(:name) { 'foo!.service' }
 
       it 'raises an ArgumentError' do
-        expect { subject.load(name, nil) }.to raise_error(ArgumentError, /only contain/)
+        expect { subject.submit(name, nil) }.to raise_error(ArgumentError, /only contain/)
       end
     end
+  end
+
+  describe '#load' do
+
+    let(:name) { 'foo.service' }
+    let(:response) { double(:response) }
+
+    before do
+      allow(subject).to receive(:update_unit).and_return(response)
+    end
+
+    it 'does NOT invoke #submit' do
+      expect(subject).not_to receive(:submit)
+      subject.load(name)
+    end
+
+    it 'invokes #update' do
+      expect(subject).to receive(:update_unit)
+        .with(name, { 'desiredState' => 'loaded', 'name' => name })
+
+      subject.load(name)
+    end
+
+    context 'when a service definition is provided' do
+
+      let(:service_def) { { 'Unit' => { 'Description' => 'bar' } } }
+
+      before do
+        allow(subject).to receive(:submit)
+      end
+      
+      it 'invokes #load' do
+        expect(subject).to receive(:submit)
+        subject.load(name, service_def)
+      end
+    end
+
   end
 
   describe '#start' do

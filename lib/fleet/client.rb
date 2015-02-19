@@ -44,25 +44,30 @@ module Fleet
       end
     end
 
-    def load(name, service_def=nil)
+    def submit(name, service_def)
 
       unless name =~ /\A[a-zA-Z0-9:_.@-]+\Z/
         raise ArgumentError, 'name may only contain [a-zA-Z0-9:_.@-]'
       end
 
-      if service_def
-        unless service_def.is_a?(ServiceDefinition)
-          service_def = ServiceDefinition.new(service_def)
-        end
-
-        begin
-          create_unit(name, service_def.to_unit(name))
-        rescue Fleet::PreconditionFailed
-        end
-      else
-        opts = { 'desiredState' => 'loaded', 'name' => name }
-        update_unit(name, opts)
+      unless service_def.is_a?(ServiceDefinition)
+        service_def = ServiceDefinition.new(service_def)
       end
+
+      begin
+        create_unit(name, service_def.to_unit(name))
+      rescue Fleet::PreconditionFailed
+      end
+    end
+
+    def load(name, service_def=nil)
+
+      if service_def
+        submit(name, service_def)
+      end
+
+      opts = { 'desiredState' => 'loaded', 'name' => name }
+      update_unit(name, opts)
     end
 
     def start(name)
