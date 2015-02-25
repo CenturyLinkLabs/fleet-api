@@ -8,6 +8,10 @@ Provides a Ruby wrapper around the CoreOS Fleet API.
 
 The client allows programmatic access to most of the *fleetctl* commands including the ability to load, start, stop, unload and destroy unit files.
 
+**Important Note:** As of version 1.0.0, this gem is now using the official Fleet REST API. Previous versions of this gem communicated with Fleet by reading/writing directly from/to the etcd key-value store. While this approach was functional, it was extremely brittle due to the fact that we were essentially using a private API. Now that the Fleet API has hit version 1.0 and is presumably stable it makes more sense to leverage the official API.
+
+Users migrating from an older version of the Gem will simply need to make sure they configure it with the Fleet API endpoint instead of the etcd API endpoint.
+
 ### Installation
 
 Install the gem directly:
