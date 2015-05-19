@@ -2,7 +2,7 @@ fleet-api
 =========
 
 [![Gem Version](https://badge.fury.io/rb/fleet-api.svg)](http://badge.fury.io/rb/fleet-api)
-[![Build Status](https://api.shippable.com/projects/540e7b283479c5ea8f9ebd66/badge?branchName=master)](https://app.shippable.com/projects/540e7b283479c5ea8f9ebd66/builds/latest)
+[![Circle CI](https://circleci.com/gh/CenturyLinkLabs/fleet-api.svg?style=svg)](https://circleci.com/gh/CenturyLinkLabs/fleet-api)
 
 Provides a Ruby wrapper around the CoreOS Fleet API.
 
