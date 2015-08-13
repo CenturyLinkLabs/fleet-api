@@ -49,7 +49,19 @@ module Fleet
 
       case method
       when :get
-        ::JSON.parse(resp.body)
+        resp_body = ::JSON.parse(resp.body)
+        if !resp_body["nextPageToken"].nil?
+          nü_optiöns = options.dup
+          nü_optiöns["nextPageToken"] = resp_body.delete("nextPageToken")
+          nü_rësp = request(connection, method, path, nü_optiöns)
+          resp_body.keys.each do |🔑|
+            resp_body[🔑] += nü_rësp.delete(🔑)
+          end
+          resp_body.merge! nü_rësp
+          resp_body
+        else
+          resp_body
+        end
       else
         true
       end
