@@ -34,6 +34,28 @@ describe Fleet::Request do
       expect(subject.send(:get, path, options)).to eq('name' => 'foo')
     end
 
+    context 'when there is pagination' do
+      let(:first_response) do
+        double(:first_response, body: '{"things":[{"name":"foo"}], "nextPageToken":"123"}', status: 200)
+      end
+      let(:second_response) do
+        double(:second_response, body: '{"things":[{"name":"bah"}], "nextPageToken":"456"}', status: 200)
+      end
+      let(:third_response) do
+        double(:second_response, body: '{"things":[{"name":"tah"}]}', status: 200)
+      end
+
+      it 'merges the responses' do
+        expect(connection).to receive(:send).with(:get, anything).and_return(first_response)
+        expect(connection).to receive(:send).with(:get, hash_including(query: { 'nextPageToken' => '123' })).and_return(second_response)
+        expect(connection).to receive(:send).with(:get, hash_including(query: {'nextPageToken' => '456'})).and_return(third_response)
+
+        expect(subject.send(:get, path)).to eql(
+          'things' => [{ 'name' => 'foo' }, { 'name' => 'bah' }, { 'name' => 'tah' }]
+        )
+      end
+    end
+
     context 'when there is a SocketError' do
       before do
         allow(connection).to receive(:send)
@@ -58,13 +80,13 @@ describe Fleet::Request do
 
   describe '#put' do
 
-    let(:options) do 
-      { foo: 'bar' } 
+    let(:options) do
+      { foo: 'bar' }
     end
 
     it 'invokes #put on the connection with the correct params' do
-      opts = { 
-        path: '/foo%20bar%40', 
+      opts = {
+        path: '/foo%20bar%40',
         headers: { 'Content-Type' => 'application/json' },
         body: JSON.dump(options)
       }
