@@ -13,6 +13,22 @@ module Fleet
     end
 
     def request(connection, method, path, options)
+      response = perform_request(connection, method, path, options)
+      return response if method != :get
+
+      next_page_token = response.delete('nextPageToken')
+      while next_page_token
+        next_options = options.merge('nextPageToken' => next_page_token)
+        next_response = perform_request(connection, method, path, next_options)
+        next_page_token = next_response.delete('nextPageToken')
+        next_response.each { |k, v| response[k] += v }
+      end
+      response
+    end
+
+    private
+
+    def perform_request(connection, method, path, options)
       req = {
         path: escape_path(path),
       }
@@ -40,8 +56,6 @@ module Fleet
     rescue Excon::Errors::SocketError => ex
       raise Fleet::ConnectionError, ex.message
     end
-
-    private
 
     def escape_path(path)
       URI.escape(path).gsub(/@/, '%40')
