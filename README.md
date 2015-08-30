@@ -137,9 +137,15 @@ Equivalent of `fleetctl status`:
     client = Fleet.new
     client.get_unit_state('forever.service')
 
+Retrieves current status of a unit file:
+
+    client = Fleet.new
+    client.status('forever.service')
+
 #### Retrieving a Unit File
 
 Retrieves contents and current state of a unit file:
 
     client = Fleet.new
     client.get_unit_file('foo.service')
+
