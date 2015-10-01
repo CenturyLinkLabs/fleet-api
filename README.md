@@ -44,12 +44,12 @@ For example, look at the following unit file.
 
 	[Unit]
 	Description=Useless infinite loop
-	
+
 	[Service]
 	ExecStart=/bin/bash -c "while true; do sleep 1; done"
 
 This unit file would be represented as the following Ruby hash.
-	
+
 	{
 	  'Unit' => {
 	    'Description' => 'Useless infinite loop'
@@ -69,7 +69,7 @@ If you need mutiple values for a single statement (like multiple `ExecStart` ins
         'ExecStart' => ["/bin/bash -c \"while true; do sleep 1; done\"", "some other command"]
       }
     }
-	
+
 #### Submitting a Unit File
 
 Equivalent of `fleetctl submit`:
@@ -82,10 +82,10 @@ Equivalent of `fleetctl submit`:
 	    'ExecStart' => "/bin/bash -c \"while true; do sleep 1; done\""
 	  }
 	}
-	
+
 	client = Fleet.new
 	client.submit('forever.service', service)
-	
+
 Note that the name you pass-in as the first parameter to the `.submit` method should end in ".service"
 
 #### Loading a Unit File
@@ -101,7 +101,7 @@ Equivalent of `fleetctl start`:
 
     client = Fleet.new
     client.start('forever.service')
-    
+
 #### Stopping a Service
 
 Equivalent of `fleetctl stop`:
@@ -115,14 +115,14 @@ Equivalent of `fleetctl unload`:
 
     client = Fleet.new
     client.unload('forever.service')
-    
+
 #### Destroying a Service
 
 Equivalent of `fleetctl destroy`:
 
     client = Fleet.new
     client.destroy('forever.service')
-    
+
 #### Listing Services
 
 Equivalent of `fleetctl list-units`:
@@ -148,4 +148,13 @@ Retrieves contents and current state of a unit file:
 
     client = Fleet.new
     client.get_unit_file('foo.service')
+
+#### Retrieving a Unit Files
+
+Equivalent of `fleetctl list-unit-files`:
+
+    client = Fleet.new
+    client.get_unit_files
+
+
 
