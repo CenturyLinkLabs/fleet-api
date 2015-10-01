@@ -54,6 +54,7 @@ module Fleet
           options: unit['options']
         }
     end
+   end
 
     def submit(name, service_def)
 
