@@ -44,6 +44,17 @@ module Fleet
       end
     end
 
+    def get_unit_files
+      units = list_units['units'] || []
+      units.map do |unit|
+        {
+          unit: unit['name'],
+          currentstate: unit['currentState'],
+          desiredstate: unit['desiredState'],
+          options: unit['options']
+        }
+    end
+
     def submit(name, service_def)
 
       unless name =~ /\A[a-zA-Z0-9:_.@-]+\Z/
