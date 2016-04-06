@@ -14,7 +14,7 @@ describe Fleet::Client::Machines do
 
     it 'GETs the Fleet machines key' do
       expect(subject).to receive(:get)
-        .with('fleet/v1/machines', nil)
+        .with('fleet/v1/machines')
         .and_return(response)
 
       subject.list_machines
